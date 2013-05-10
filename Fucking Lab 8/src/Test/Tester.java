@@ -27,7 +27,6 @@ public class Tester extends TestCase {
 
 	private Mockery context = new Mockery();
 	private LightControllerStateMachine classUnderTest;
-	private LightControllerCommandInterface mockCommand;
 	private LightTimerInterface mockTimer;
 	private LightDeviceInterface mockInterface;
 	private LightControllerStateMachineObserverInterface lightObserver;
@@ -35,7 +34,6 @@ public class Tester extends TestCase {
 	@Before
 	public void setUp() throws Exception {
 		context = new Mockery();
-		mockCommand = context.mock(LightControllerCommandInterface.class);
 		mockTimer = context.mock(LightTimerInterface.class);
 		mockInterface = context.mock(LightDeviceInterface.class);
 		lightObserver = context
@@ -139,6 +137,8 @@ public class Tester extends TestCase {
 
 		// No additional tests were constructed because this state can transfer
 		// using all other possible commands correctly.
+
+		context.assertIsSatisfied();
 	}
 
 	@Test
@@ -192,6 +192,8 @@ public class Tester extends TestCase {
 		classUnderTest
 				.signalAction(LightControllerStateMachine.SECURITY_ALARM_TRIPPED);
 
+		context.assertIsSatisfied();
+
 	}
 
 	@Test
@@ -217,5 +219,108 @@ public class Tester extends TestCase {
 		// Tries to move to Intrusion Detected. Nothing happens.
 		classUnderTest
 				.signalAction(LightControllerStateMachine.SECURITY_ALARM_TRIPPED);
+		
+		context.assertIsSatisfied();
 	}
+
+	@Test
+	public void testMotionDetectedNoAlarm(){
+		context.checking(new Expectations() {
+			{
+				// Moves to Lamp off.
+				oneOf(mockInterface).turnLightOff();
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.LAMP_OFF_NIGHTIME);
+
+				// Motion detected
+				oneOf(mockInterface).turnLightOnFullBrightness();
+				oneOf(lightObserver)
+						.updateLightState(LightControllerStateMachineObserverInterface.MOTION_DETECTED);
+				
+
+				oneOf(mockInterface).turnLightOff();
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.LAMP_OFF_NIGHTIME);
+								
+			}
+		});
+
+		classUnderTest
+				.signalAction(LightControllerStateMachine.MOTION_DETECTED);
+		
+		classUnderTest
+				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
+	}	
+	
+	@Test
+	public void testMotionDetectedIntruder(){
+		context.checking(new Expectations() {
+			{
+				// Moves to Lamp off.
+				oneOf(mockInterface).turnLightOff();
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.LAMP_OFF_NIGHTIME);
+
+				oneOf(mockInterface).turnLightOnFullBrightness();
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.MOTION_DETECTED);
+
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.INTRUSION_DETECTED);
+								
+			}
+		});
+
+		classUnderTest
+				.signalAction(LightControllerStateMachine.MOTION_DETECTED);
+		
+		classUnderTest
+				.signalAction(LightControllerStateMachine.SECURITY_ALARM_TRIPPED);
+
+		classUnderTest
+				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
+		
+		classUnderTest
+				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
+		
+		
+	}	
+
+	@Test
+	public void testLampOffAlarmTripClear(){
+		context.checking(new Expectations() {
+			{
+				// Moves to Lamp off.
+				oneOf(mockInterface).turnLightOff();
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.LAMP_OFF_NIGHTIME);
+
+				oneOf(mockInterface).turnLightOff();
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.INTRUSION_DETECTED);
+
+				oneOf(mockInterface).turnLightOff();
+				oneOf(lightObserver)
+						.updateLightState(
+								LightControllerStateMachineObserverInterface.LAMP_OFF_NIGHTIME);
+								
+			}
+		});
+
+		classUnderTest
+				.signalAction(LightControllerStateMachine.SECURITY_ALARM_TRIPPED);
+		
+		classUnderTest
+				.signalAction(LightControllerStateMachine.ALARM_CLEARED);
+		
+		
+	}	
+	
 }

@@ -187,7 +187,12 @@ public class LightControllerStateMachine implements
 			break;
 
 		case LightControllerStateMachineObserverInterface.MOTION_DETECTED:
-			tmr.startTimer(5);
+			/*
+			 * BUG
+			 * AS
+			 * Timer was set for 5 seconds not 30
+			 */
+			tmr.startTimer(30);
 			light.turnLightOnFullBrightness();
 			/*
 			 * BUG
@@ -370,7 +375,7 @@ public class LightControllerStateMachine implements
 		if (stateChange == true) {
 			// Invoke exit actions.
 			handleExitConditions(presentState);
-			System.out.println(presentState);
+
 			// Invoke entry actions.
 			handleEntryConditions(destinationState);
 
