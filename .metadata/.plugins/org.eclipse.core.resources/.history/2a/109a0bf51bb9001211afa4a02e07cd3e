@@ -224,7 +224,6 @@ public class Tester extends TestCase {
 	}
 
 	@Test
-	//Tests motion detected, no alarm
 	public void testMotionDetectedNoAlarm(){
 		context.checking(new Expectations() {
 			{
@@ -239,7 +238,7 @@ public class Tester extends TestCase {
 				oneOf(lightObserver)
 						.updateLightState(LightControllerStateMachineObserverInterface.MOTION_DETECTED);
 				
-				// Return to Night time light off
+
 				oneOf(mockInterface).turnLightOff();
 				oneOf(lightObserver)
 						.updateLightState(
@@ -248,19 +247,14 @@ public class Tester extends TestCase {
 			}
 		});
 
-		//Motion is detected
 		classUnderTest
 				.signalAction(LightControllerStateMachine.MOTION_DETECTED);
 		
-		//Timer expires after motion is detected
 		classUnderTest
 				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
-
-		context.assertIsSatisfied();
 	}	
 	
 	@Test
-	//Tests if an intruder is detected
 	public void testMotionDetectedIntruder(){
 		context.checking(new Expectations() {
 			{
@@ -270,13 +264,11 @@ public class Tester extends TestCase {
 						.updateLightState(
 								LightControllerStateMachineObserverInterface.LAMP_OFF_NIGHTIME);
 
-				//Motion is detected
 				oneOf(mockInterface).turnLightOnFullBrightness();
 				oneOf(lightObserver)
 						.updateLightState(
 								LightControllerStateMachineObserverInterface.MOTION_DETECTED);
 
-				// Intruder is detected
 				oneOf(lightObserver)
 						.updateLightState(
 								LightControllerStateMachineObserverInterface.INTRUSION_DETECTED);
@@ -284,27 +276,22 @@ public class Tester extends TestCase {
 			}
 		});
 
-		// Motion is detected
 		classUnderTest
 				.signalAction(LightControllerStateMachine.MOTION_DETECTED);
 		
-		// Security alarm is tripped
 		classUnderTest
 				.signalAction(LightControllerStateMachine.SECURITY_ALARM_TRIPPED);
 
-		// Lamp Timer expires, switches state On -> Off
 		classUnderTest
 				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
 		
-		// Lamp Timer expires, switches state Off -> On
 		classUnderTest
 				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
 		
-		context.assertIsSatisfied();
+		
 	}	
 
 	@Test
-	//Tests if alarm is tripped from Night-Off and is then cleared
 	public void testLampOffAlarmTripClear(){
 		context.checking(new Expectations() {
 			{
@@ -314,13 +301,11 @@ public class Tester extends TestCase {
 						.updateLightState(
 								LightControllerStateMachineObserverInterface.LAMP_OFF_NIGHTIME);
 
-				// Intruder is detected
 				oneOf(mockInterface).turnLightOff();
 				oneOf(lightObserver)
 						.updateLightState(
 								LightControllerStateMachineObserverInterface.INTRUSION_DETECTED);
 
-				//Return to lamp off night time
 				oneOf(mockInterface).turnLightOff();
 				oneOf(lightObserver)
 						.updateLightState(
@@ -329,15 +314,13 @@ public class Tester extends TestCase {
 			}
 		});
 
-		// Security Alarm is tripped
 		classUnderTest
 				.signalAction(LightControllerStateMachine.SECURITY_ALARM_TRIPPED);
 		
-		// Alarm is cleared
 		classUnderTest
 				.signalAction(LightControllerStateMachine.ALARM_CLEARED);
 		
-		context.assertIsSatisfied();
+		
 	}	
 	
 }

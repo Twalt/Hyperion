@@ -224,7 +224,6 @@ public class Tester extends TestCase {
 	}
 
 	@Test
-	//Tests motion detected, no alarm
 	public void testMotionDetectedNoAlarm(){
 		context.checking(new Expectations() {
 			{
@@ -255,12 +254,9 @@ public class Tester extends TestCase {
 		//Timer expires after motion is detected
 		classUnderTest
 				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
-
-		context.assertIsSatisfied();
 	}	
 	
 	@Test
-	//Tests if an intruder is detected
 	public void testMotionDetectedIntruder(){
 		context.checking(new Expectations() {
 			{
@@ -300,11 +296,10 @@ public class Tester extends TestCase {
 		classUnderTest
 				.signalAction(LightControllerStateMachine.LAMP_TIMER_EXPIRED);
 		
-		context.assertIsSatisfied();
+		
 	}	
 
 	@Test
-	//Tests if alarm is tripped from Night-Off and is then cleared
 	public void testLampOffAlarmTripClear(){
 		context.checking(new Expectations() {
 			{
@@ -337,7 +332,7 @@ public class Tester extends TestCase {
 		classUnderTest
 				.signalAction(LightControllerStateMachine.ALARM_CLEARED);
 		
-		context.assertIsSatisfied();
+		
 	}	
 	
 }
