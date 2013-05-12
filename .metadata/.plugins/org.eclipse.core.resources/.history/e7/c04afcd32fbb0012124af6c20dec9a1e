@@ -1,0 +1,26 @@
+'''
+Created on May 12, 2013
+
+@author: Arjun
+'''
+import socket
+import string
+import urllib
+
+HOST = "irc.snoonet.org"
+PORT = 6667
+NICK = "Twaltbot"
+IDENT = "Twaltbot"
+REALNAME = "Twaltbot"
+readbuffer = ""
+
+sock = socket.socket();
+sock.connect((HOST, PORT))
+data = "NICK %s\r\n" % NICK
+sock.send(data.encode())
+data = "USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME)
+sock.send(data.encode())
+data = "JOIN #korean, \r\n"
+sock.send(data.encode())
+
+readbuffer=readbuffer+sock.recv(1024)
