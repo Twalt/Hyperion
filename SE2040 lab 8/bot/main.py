@@ -12,6 +12,7 @@ NICK = "shankerabot"
 IDENT = "Twaltbot"
 REALNAME = "Twaltbot"
 readbuffer = ""
+connect = 0
 
 if len(sys.argv) == 2:
     if isinstance(sys.argv[0], int):
@@ -45,12 +46,17 @@ while 1:
         line=line.split()
         print(line)
         if line[0] == "PING":
-            print(line[0])
             pong = "PONG %s\r\n" % line[1]
             sock.send(pong.encode('utf-8'))
-        
-        if(line[1]=='PRIVMSG' and line[3] == ':$mathify'):
-            evalthis = line[4]
-            evalthis = eval(evalthis)
-            output = "PRIVMSG %s :%i\r\n" % (line[2], evalthis)
-            sock.send(output.encode())
+        if len(line) > 4:
+            if line[1]=='PRIVMSG' and line[3] == ':shankerabot' and line[4] == 'hello':
+                f = open("hello.txt", "r")
+                lineslist = f.readlines();
+                for words in lineslist:
+                    output = "PRIVMSG %s :%s\r\n" % (line[2], words)
+                    sock.send(output.encode())
+            if line[1]=='PRIVMSG' and line[3] == ':$mathify':
+                evalthis = line[4]
+                evalthis = eval(evalthis)
+                output = "PRIVMSG %s :%i\r\n" % (line[2], evalthis)
+                sock.send(output.encode())
