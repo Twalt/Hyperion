@@ -36,4 +36,21 @@ data = "JOIN #shankeratest, \r\n"
 sock.send(data.encode())
 
 while 1:
-    sock.recv(1024)
+    received = sock.recv(1024)
+    readbuffer = readbuffer + received.decode("utf-8")
+    temp=readbuffer.split("\n")
+    readbuffer=temp.pop( )
+    for line in temp:
+        line=line.rstrip()
+        line=line.split()
+        print(line)
+        if line[0] == "PING":
+            print(line[0])
+            pong = "PONG %s\r\n" % line[1]
+            sock.send(pong.encode('utf-8'))
+        
+        if(line[1]=='PRIVMSG' and line[3] == ':$mathify'):
+            evalthis = line[4]
+            evalthis = eval(evalthis)
+            output = "PRIVMSG %s :%i\r\n" % (line[2], evalthis)
+            sock.send(output.encode())

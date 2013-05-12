@@ -1,12 +1,1 @@
-INSTUPbot.main
-C:\Users\Arjun\Documents\GitHub\Hyperion\SE2040 lab 8\bot\main.py
-INFOS:&&3|1|2|0&&3|3|2|0&&3|4|2|0&&3|5|2|0&&3|6|2|0&&3|6|2|0&&3|7|2|0&&3|8|2|0&&3|9|2|0&&3|9|2|0&&3|9|2|0
-sock=8
-HOST=6
-NICK=1
-PORT=7
-IDENT=3
-readbuffer=5
-data=9
-bot.main=2
-REALNAME=4
+DELSTRbot.__init__

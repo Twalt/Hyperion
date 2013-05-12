@@ -3,27 +3,27 @@
 C:\Users\Arjun\Documents\GitHub\Hyperion\.metadata\.plugins\org.eclipse.core.resources\.projects\SE2040 lab 8\com.python.pydev.analysis\v1_indexcache
 .v1_indexcache
 bot.__init__|0|C:\Users\Arjun\Documents\GitHub\Hyperion\SE2040 lab 8\bot\__init__.py
+bot.main|0|C:\Users\Arjun\Documents\GitHub\Hyperion\SE2040 lab 8\bot\main.py
 -- END DISKCACHE
 -- START DICTIONARY
-0
+1
+1=bot.main
 -- END DICTIONARY
 -- START TREE 1
-15
-__a|0|
-buf|0|
-dat|0|
-hos|0|
-htm|0|
-ide|0|
-lin|0|
-nic|0|
-por|0|
-rea|0|
-s|0|
-sel|0|
-soc|0|
-sou|0|
-tem|0|
+13
+dat|1|data!11@
+eva|1|evalthis!11@
+hos|1|HOST!11@
+ide|1|IDENT!11@
+lin|1|line!11@
+nic|1|NICK!11@
+out|1|output!11@
+pon|1|pong!11@
+por|1|PORT!11@
+rea|2|REALNAME!11@readbuffer!11@
+rec|1|received!11@
+soc|1|sock!11@
+tem|1|temp!11@
 -- END TREE
 -- START TREE 2
 0
