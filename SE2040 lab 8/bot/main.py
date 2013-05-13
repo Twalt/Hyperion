@@ -39,29 +39,34 @@ def main(argv=sys.argv):
             line=line.split()
             print(line)
             if line[0] == "PING":
-				doPong(sock, line)
+                doPong(sock, line)
             if len(line) == 4:
-                if line[1]=='PRIVMSG' and line[3] == ':$help':
-                    f = open("hello.txt", "r")
-                    lineslist = f.readlines();
-                    for words in lineslist:
-                        output = "PRIVMSG %s :%s\r\n" % (line[2], words)
-                        sock.send(output.encode())
+                doHelp(sock, line)
             if len(line) == 5:         
-                if line[1]=='PRIVMSG' and line[3] == ':$mathify':
-                    evalthis = line[4]
-                    if validMath(evalthis):
-                        print(1)
-                        evalthis = eval(evalthis)
-                        output = "PRIVMSG %s :%i\r\n" % (line[2], evalthis)
-                    else:
-                        print(2)
-                        output = "PRIVMSG %s :%s\r\n" % (line[2], "Invalid arguments for $mathify")
-                    sock.send(output.encode())
+                doMathify(sock, line)
+
 
 def doPong(sock, line):
     pong = "PONG %s\r\n" % line[1]
     sock.send(pong.encode())
+
+def doHelp(sock, line):
+    if line[1]=='PRIVMSG' and line[3] == ':$help':
+        f = open("hello.txt", "r")
+        lineslist = f.readlines();
+        for words in lineslist:
+            output = "PRIVMSG %s :%s\r\n" % (line[2], words)
+            sock.send(output.encode())
+            
+def doMathify(sock, line):
+    if line[1]=='PRIVMSG' and line[3] == ':$mathify':
+        evalthis = line[4]
+        if validMath(evalthis):
+            evalthis = eval(evalthis)
+            output = "PRIVMSG %s :%i\r\n" % (line[2], evalthis)
+        else:
+            output = "PRIVMSG %s :%s\r\n" % (line[2], "Invalid arguments for $mathify")
+        sock.send(output.encode())
 
 def gethost(argv):
     if argv[1].isdigit():
