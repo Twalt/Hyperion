@@ -8,9 +8,9 @@ import socket
 import re
 
 def main(argv=sys.argv):
-    NICK = "shankerabot"
-    IDENT = "shankerabot"
-    REALNAME = "shankerabot"
+    NICK = "Twaltbot"
+    IDENT = "Twaltbot"
+    REALNAME = "Twaltbot"
     readbuffer = ""
     
     if len(sys.argv) == 3:
@@ -26,7 +26,7 @@ def main(argv=sys.argv):
     sock.send(data.encode())
     data = "USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME)
     sock.send(data.encode())
-    data = "JOIN #shankeratest, \r\n"
+    data = "JOIN #testlab8thing, \r\n"
     sock.send(data.encode())
     
     while 1:
