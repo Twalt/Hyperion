@@ -7,18 +7,18 @@ import sys
 import socket
 import re
 
-HOST = "irc.snoonet.org"
-PORT = 6667
 def main(argv=sys.argv):
     NICK = "Twaltbot"
     IDENT = "Twaltbot"
     REALNAME = "Twaltbot"
     readbuffer = ""
-    connect = 0
     
-    if len(argv) == 3:
+    if len(sys.argv) == 3:
         HOST = gethost(sys.argv)
         PORT = getport(sys.argv)
+    else:
+        HOST = "irc.snoonet.org"
+        PORT = 6667
             
     sock = socket.socket();
     sock.connect((HOST, PORT))
@@ -51,9 +51,13 @@ def main(argv=sys.argv):
             if len(line) == 5:         
                 if line[1]=='PRIVMSG' and line[3] == ':$mathify':
                     evalthis = line[4]
-                    validMath(evalthis)
-                    evalthis = eval(evalthis)
-                    output = "PRIVMSG %s :%i\r\n" % (line[2], evalthis)
+                    if validMath(evalthis):
+                        print(1)
+                        evalthis = eval(evalthis)
+                        output = "PRIVMSG %s :%i\r\n" % (line[2], evalthis)
+                    else:
+                        print(2)
+                        output = "PRIVMSG %s :%s\r\n" % (line[2], "Invalid arguments for $mathify")
                     sock.send(output.encode())
 
 def gethost(argv):
@@ -75,12 +79,11 @@ def getport(argv):
     return PORT
     
 def validMath(arg):
-    numlist = re.split('[-/*+]+', arg)
-    charlist = re.split('[0123456789]+', arg)
+    valid = True
+    numlist = re.split('[-/)(*+]+', arg)
     for val in numlist:
-        
-    print(1)
-    print(numlist)
-    print(2)
+        if not val.isdigit():
+             valid = False
+    return valid
                     
 main()
