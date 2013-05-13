@@ -39,8 +39,7 @@ def main(argv=sys.argv):
             line=line.split()
             print(line)
             if line[0] == "PING":
-                pong = "PONG %s\r\n" % line[1]
-                sock.send(pong.encode())
+				doPong(sock, line)
             if len(line) == 4:
                 if line[1]=='PRIVMSG' and line[3] == ':$help':
                     f = open("hello.txt", "r")
@@ -59,6 +58,10 @@ def main(argv=sys.argv):
                         print(2)
                         output = "PRIVMSG %s :%s\r\n" % (line[2], "Invalid arguments for $mathify")
                     sock.send(output.encode())
+
+def doPong(sock, line):
+    pong = "PONG %s\r\n" % line[1]
+    sock.send(pong.encode())
 
 def gethost(argv):
     if argv[1].isdigit():
