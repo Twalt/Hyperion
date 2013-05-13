@@ -50,11 +50,11 @@ def main(argv=sys.argv):
 
 
 def doPong(sock, line):
-    pong = "PONG %s\r\n" % line[1]
-    sock.send(pong.encode())
+    if line[0] == 'PING':
+        pong = "PONG %s\r\n" % line[1]
+        sock.send(pong.encode())
 
 def doHelp(sock, line):
-    print(2)
     if line[1]=='PRIVMSG' and line[3] == ':$help':
         f = open("hello.txt", "r")
         lineslist = f.readlines();
