@@ -38,11 +38,11 @@ def main(argv=sys.argv):
             line=line.rstrip()
             line=line.split()
             print(line)
-            if line[0] == "PING":
+            if "PING" in line:
                 doPong(sock, line)
-            if len(line) == 4:
+            if "$help" in line:
                 doHelp(sock, line)
-            if len(line) == 5:         
+            elif "$mathify" in line:         
                 doMathify(sock, line)
 
 
