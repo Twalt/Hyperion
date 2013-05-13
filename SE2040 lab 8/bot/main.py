@@ -31,8 +31,8 @@ def main(argv=sys.argv):
     
     events = dict()
     events['PING'] = doPong
-    events['$help'] = doHelp
-    events['$mathify'] = doMathify
+    events[':$help'] = doHelp
+    events[':$mathify'] = doMathify
     
     while 1:
         received = sock.recv(1024)
@@ -44,8 +44,9 @@ def main(argv=sys.argv):
             line=line.split()
             print(line)
             for key in events:
-                doThis = events[key]
-                doThis(sock, line)
+                if key in line:
+                    doThis = events[key]
+                    doThis(sock, line)
 
 
 def doPong(sock, line):
@@ -53,6 +54,7 @@ def doPong(sock, line):
     sock.send(pong.encode())
 
 def doHelp(sock, line):
+    print(2)
     if line[1]=='PRIVMSG' and line[3] == ':$help':
         f = open("hello.txt", "r")
         lineslist = f.readlines();
