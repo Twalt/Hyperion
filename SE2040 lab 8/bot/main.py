@@ -29,6 +29,11 @@ def main(argv=sys.argv):
     data = "JOIN #testlab8thing, \r\n"
     sock.send(data.encode())
     
+    events = dict()
+    events['PING'] = doPong
+    events['$help'] = doHelp
+    events['$mathify'] = doMathify
+    
     while 1:
         received = sock.recv(1024)
         readbuffer = readbuffer + received.decode("utf-8")
@@ -38,12 +43,9 @@ def main(argv=sys.argv):
             line=line.rstrip()
             line=line.split()
             print(line)
-            if "PING" in line:
-                doPong(sock, line)
-            if "$help" in line:
-                doHelp(sock, line)
-            elif "$mathify" in line:         
-                doMathify(sock, line)
+            for key in events:
+                doThis = events[key]
+                doThis(sock, line)
 
 
 def doPong(sock, line):
