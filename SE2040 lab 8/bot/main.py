@@ -1,6 +1,7 @@
+#! /usr/bin/env python3
 '''
 Created on May 12, 2013
-
+copyright Arjun Shanker, don't steal my junk
 @author: Arjun
 '''
 import sys
@@ -37,7 +38,8 @@ def main(argv=sys.argv):
                     (IDENT, HOST, REALNAME)).encode())
         if len(sys.argv) > 1:
             for param in sys.argv: 
-                if param != "main.py" and not param.isdigit() and not "." in param:
+                if param != "main.py" and not param.isdigit() \
+                                        and not "." in param:
                     doJoin(sock, str(param))
         else:
             doJoin(sock, "testlab8thing")
@@ -72,11 +74,11 @@ def main(argv=sys.argv):
                             sock.send(("PRIVMSG %s :%s\r\n" % (line[2],
                                 "Can not divide by Zero")).encode())
     except socket.gaierror:
-		print("Invalid HOST / PORT values\n"
-                "HOST and PORT must be first the two parameters.")
+        print("""Invalid HOST / PORT values\n
+                HOST and PORT must be first the two parameters.""")
     except socket.error:
-		print("Invalid HOST / PORT values\n"
-                "HOST and PORT must be first the two parameters.")
+        print("""Invalid HOST / PORT values\n
+                HOST and PORT must be first the two parameters.""")
     except KeyboardInterrupt:
         print("\nTerminating Bot")
 
