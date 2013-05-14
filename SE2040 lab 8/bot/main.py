@@ -21,8 +21,11 @@ def main(argv=sys.argv):
     readbuffer = ""
     try:
         if len(sys.argv) >= 3:
-            getAddress(sys.argv)
+            isaddress = getAddress(sys.argv)
         else:
+            isaddress = False
+        
+        if not isaddress:
             HOST = "irc.snoonet.org"
             PORT = 6667
             
@@ -123,14 +126,18 @@ def doSource(sock, line):
 def getAddress(argv):
     global HOST
     global PORT
+    isaddress = False
     if argv[1].isdigit():
         if "." in argv[2]:
             HOST = argv[2]
             PORT = int(argv[1])
+            isaddress = True
     elif argv[2].isdigit():
         if "." in argv[1]:
             HOST = argv[1]
             PORT = int(argv[2])
+            isaddress = True
+    return isaddress
 
 # ensures the data being evaluated is valid, and does not contain
 # any hidden secrets
