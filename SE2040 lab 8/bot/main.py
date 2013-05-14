@@ -9,6 +9,7 @@ import re
 
 HOST = ""
 PORT = 0
+SRC = "https://github.com/Twalt/Hyperion/blob/master/SE2040%20lab%208/"
 
 def main(argv=sys.argv):
     global HOST
@@ -43,6 +44,7 @@ def main(argv=sys.argv):
         events['PING'] = doPong
         events[':$help'] = doHelp
         events[':$mathify'] = doMathify
+        events[':$source'] = doSource
         
         #makes sure connection always exists.
         #bot should not disconnect
@@ -53,15 +55,19 @@ def main(argv=sys.argv):
             readbuffer=temp.pop()
             
             for line in temp:
-                print(line.decode("utf-8"))
+                print(line)
                 #logs connection info to terminal
                 line=line.rstrip()
                 line=line.split()
             #event loop
             for key in events:
                     if key in line:
-                        doThis = events[key]
-                        doThis(sock, line)
+                        try:
+                            doThis = events[key]
+                            doThis(sock, line)
+                        except ZeroDivisionError:
+                            sock.send(("PRIVMSG %s :%s\r\n" % (line[2],
+                                "Can not divide by Zero")).encode())
     except socket.gaierror:
 		print("Invalid HOST / PORT values\n"
                 "HOST and PORT must be first the two parameters.")
@@ -105,6 +111,13 @@ def doMathify(sock, line):
                 output = "PRIVMSG %s :%s\r\n" % (line[2], 
                          "Invalid arguments for $mathify")
             sock.send(output.encode())
+            
+# retrieves source and prints it for user
+def doSource(sock, line):
+    if len(line) == 4:
+        if line[1]=='PRIVMSG' and line[3] == ':$source':
+            output = "PRIVMSG %s :%s\r\n" % (line[2], SRC)
+            sock.send(output.encode())
 
 # sets the HOST and PORT global variables used to connect to the IRC
 def getAddress(argv):
@@ -123,10 +136,13 @@ def getAddress(argv):
 # any hidden secrets
 def validMath(arg):
     valid = True
-    numlist = re.split('[-/)(*+]+', arg)
-    for val in numlist:
-        if not val.isdigit():
-             valid = False
+    numlist = re.split('[+*\/\-\\(\\)]*', arg)
+    if "**" in arg:
+        valid = False
+    if valid:
+        for val in numlist:
+            if not val.isdigit():
+                 valid = False
     return valid
                     
 main()
