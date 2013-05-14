@@ -18,45 +18,58 @@ def main(argv=sys.argv):
     IDENT = "Twaltbot"
     REALNAME = "Twaltbot"
     readbuffer = ""
-    
-    if len(sys.argv) == 3:
-        getAddress(sys.argv)
-    else:
-        HOST = "irc.snoonet.org"
-        PORT = 6667
+    try:
+        if len(sys.argv) >= 3:
+            getAddress(sys.argv)
+        else:
+            HOST = "irc.snoonet.org"
+            PORT = 6667
             
-    sock = socket.socket();
-    sock.connect((HOST, PORT))
-    
-    sock.send(("NICK %s\r\n" % NICK).encode())
-    sock.send(("USER %s %s bla :%s\r\n" % 
-                (IDENT, HOST, REALNAME)).encode())
-    sock.send(("JOIN #testlab8thing, \r\n").encode())
-    
-    events = dict()
-    events['PING'] = doPong
-    events[':$help'] = doHelp
-    events[':$mathify'] = doMathify
-    
-    #makes sure connection always exists.
-    #bot should not disconnect
-    while 1:
-        received = sock.recv(1024)
-        readbuffer = readbuffer + received.decode("utf-8")
-        temp=readbuffer.split("\n")
-        readbuffer=temp.pop()
+        sock = socket.socket();
+        sock.connect((HOST, PORT))
         
-        for line in temp:
-            print(line.decode("utf-8"))
-            #logs connection info to terminal
-            line=line.rstrip()
-            line=line.split()
+        sock.send(("NICK %s\r\n" % NICK).encode())
+        sock.send(("USER %s %s bla :%s\r\n" % 
+                    (IDENT, HOST, REALNAME)).encode())
+        if len(sys.argv) > 1:
+            for param in sys.argv: 
+                if param != "main.py" and not param.isdigit() and not "." in param:
+                    doJoin(sock, str(param))
+        else:
+            doJoin(sock, "testlab8thing")
             
+        
+        events = dict()
+        events['PING'] = doPong
+        events[':$help'] = doHelp
+        events[':$mathify'] = doMathify
+        
+        #makes sure connection always exists.
+        #bot should not disconnect
+        while 1:
+            received = sock.recv(1024)
+            readbuffer = readbuffer + received.decode("utf-8")
+            temp=readbuffer.split("\n")
+            readbuffer=temp.pop()
+            
+            for line in temp:
+                print(line.decode("utf-8"))
+                #logs connection info to terminal
+                line=line.rstrip()
+                line=line.split()
             #event loop
             for key in events:
-                if key in line:
-                    doThis = events[key]
-                    doThis(sock, line)
+                    if key in line:
+                        doThis = events[key]
+                        doThis(sock, line)
+    except socket.gaierror:
+		print("Invalid HOST / PORT values\n"
+                "HOST and PORT must be first the two parameters.")
+    except socket.error:
+		print("Invalid HOST / PORT values\n"
+                "HOST and PORT must be first the two parameters.")
+    except KeyboardInterrupt:
+        print("\nTerminating Bot")
 
 #if the server sends a PING, it is trying to determine whether the 
 #client has timed out. This function handles that request
@@ -65,6 +78,10 @@ def doPong(sock, line):
         pong = "PONG %s\r\n" % line[1]
         sock.send(pong.encode())
 
+#makes bot join the specified channel
+def doJoin(sock, channel):
+    sock.send(("JOIN #%s, \r\n" % (channel)).encode())
+    
 #reads data from file and prints out instructions for how to use
 #$mathify
 def doHelp(sock, line):
